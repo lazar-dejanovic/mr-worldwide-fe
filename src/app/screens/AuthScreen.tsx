@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router';
 import { Eye, EyeOff, Globe, ArrowRight, Mail, Lock, User, CheckCircle } from 'lucide-react';
 import { useApp } from '../context/AppContext';
@@ -7,7 +7,8 @@ import { motion, AnimatePresence } from 'motion/react';
 const HERO_IMAGE = 'https://images.unsplash.com/photo-1576737064520-f45d313d17ff?w=1080&q=80';
 
 export default function AuthScreen() {
-  const { login, register } = useApp();
+  const { login, register, isAuthenticated } = useApp();
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [mode, setMode] = useState<'login' | 'register'>('login');
   const [showPassword, setShowPassword] = useState(false);
@@ -17,23 +18,42 @@ export default function AuthScreen() {
 
   const updateForm = (field: string, value: string) => setForm(prev => ({ ...prev, [field]: value }));
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     setError('');
-    if (!form.email || !form.password) { setError('Please fill in all fields.'); return; }
-    const ok = login(form.email, form.password);
-    if (ok) {
+    if (!form.email || !form.password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    setLoading(true);
+    try {
+      await login(form.email, form.password);
       navigate('/');
-    } else {
-      setError('Invalid email or password.');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleRegister = () => {
+  const handleRegister = async () => {
     setError('');
-    if (!form.firstName || !form.lastName || !form.email || !form.password) { setError('Please fill in all fields.'); return; }
-    if (form.password.length < 8) { setError('Password must be at least 8 characters.'); return; }
-    const ok = register(form.firstName, form.lastName, form.email, form.password);
-    if (ok) navigate('/survey');
+    if (!form.firstName || !form.lastName || !form.email || !form.password) {
+      setError('Please fill in all fields.');
+      return;
+    }
+    if (form.password.length < 8) {
+      setError('Password must be at least 8 characters.');
+      return;
+    }
+    setLoading(true);
+    try {
+      await register(form.firstName, form.lastName, form.email, form.password);
+      navigate('/survey');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = () => mode === 'login' ? handleLogin() : handleRegister();

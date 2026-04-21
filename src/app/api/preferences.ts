@@ -15,14 +15,14 @@ export interface UserTripPreferenceRequest {
 
 /** GET /api/users/preferences/ */
 export async function apiGetPreferences(): Promise<UserTripPreferenceDto> {
-  return request<UserTripPreferenceDto>('/users/preferences/');
+  return request<UserTripPreferenceDto>('/users/preferences');
 }
 
 /** POST /api/users/preferences/ — create preference profile */
 export async function apiCreatePreferences(
   body: UserTripPreferenceRequest,
 ): Promise<UserTripPreferenceDto> {
-  return request<UserTripPreferenceDto>('/users/preferences/', {
+  return request<UserTripPreferenceDto>('/users/preferences', {
     method: 'POST',
     body,
   });
@@ -32,7 +32,7 @@ export async function apiCreatePreferences(
 export async function apiUpdatePreferences(
   body: UserTripPreferenceRequest,
 ): Promise<UserTripPreferenceDto> {
-  return request<UserTripPreferenceDto>('/users/preferences/', {
+  return request<UserTripPreferenceDto>('/users/preferences', {
     method: 'PUT',
     body,
   });

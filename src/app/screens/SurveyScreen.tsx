@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { apiUpdatePreferences, apiCreatePreferences } from '../api/preferences';
 import { ChevronRight, ChevronLeft, Check, Sparkles, MapPin, X } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { motion, AnimatePresence } from 'motion/react';
@@ -59,10 +60,23 @@ export default function SurveyScreen() {
     return true;
   };
 
-  const handleNext = () => {
-    if (step < 3) setStep(step + 1);
-    else {
+  const handleNext = async () => {
+    if (step < 3) {
+      setStep(step + 1);
+    } else {
+      console.log('step 3, saving preferences...');
+      console.log({ interests, hobbies, favouriteDestinations: destinations });
       savePreferences({ interests, hobbies, favouriteDestinations: destinations });
+      try {
+        await apiCreatePreferences({
+          interests,
+          hobbies,
+          favouriteDestinations: destinations,
+        });
+        console.log('preferences saved!');
+      } catch (err) {
+        console.error('Failed to save preferences:', err);
+      }
       navigate('/');
     }
   };
