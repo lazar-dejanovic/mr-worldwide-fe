@@ -1,7 +1,7 @@
 
-  # Mr Worldwide prototype
+  # Mr Worldwide
 
-  This is a code bundle for Mr Worldwide prototype. The original project is available at https://www.figma.com/design/UjZCpobkPuJ0I64jnosVCj/Mr-Worldwide-prototype.
+  This is a code bundle for Mr Worldwide.
 
   ## Running the code
 
